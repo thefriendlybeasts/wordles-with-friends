@@ -2,16 +2,19 @@
 	import Guess from '../Guess.svelte';
 	import { onMount } from 'svelte';
 
-	let word = '';
+	let solution = '';
 	let activeGuess = 0;
-	let guesses = [
-		{ word: null },
-		{ word: null },
-		{ word: null },
-		{ word: null },
-		{ word: null },
-		{ word: null }
-	];
+	/**
+	 * Guesses are arrays of objects containing the letter, whether the position is correct, and
+	 * whether the letter is in the solution. Here's what a single letter looks like:
+	 *
+	 * {
+	 *  letter: '',
+	 *  positionIsCorrect: false,
+	 *  presence: false,
+	 * }
+	 */
+	let guesses = [[], [], [], [], [], []];
 
 	/**
 	 * Check if the guess is correct and respond accordingly.
@@ -19,9 +22,15 @@
 	 */
 	function checkGuess(guessSubmittedEvent) {
 		const guess = guessSubmittedEvent.detail;
-		guesses[activeGuess].word = guess;
 
-		if (guess === word) {
+		guesses[activeGuess] = guess.map((letter, index) => ({
+			letter,
+			positionIsCorrect: solution[index] === letter,
+			presence: solution.includes(letter)
+		}));
+
+		const guessAsString = guess.join('');
+		if (guessAsString === solution) {
 			alert('You win!');
 			return;
 		}
@@ -33,7 +42,7 @@
 	}
 
 	onMount(() => {
-		word = document.location.search.substring(6);
+		solution = document.location.search.substring(6);
 	});
 </script>
 

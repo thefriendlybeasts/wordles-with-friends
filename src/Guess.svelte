@@ -17,7 +17,7 @@
 			values[key] = value;
 		});
 
-		dispatch('guess.submitted', values.join(''));
+		dispatch('guess.submitted', values);
 	}
 </script>
 
