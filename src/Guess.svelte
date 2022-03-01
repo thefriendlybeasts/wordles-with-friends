@@ -5,7 +5,7 @@
 	export let disabled = true;
 
 	const dispatch = createEventDispatcher();
-	let values = [null, null, null, null, null];
+	let values = ['', '', '', '', ''];
 
 	/**
 	 * Record the guess and let the parent know.
@@ -19,11 +19,51 @@
 
 		dispatch('guess.submitted', values);
 	}
+
+	/**
+	 * Auto-focus on the next input after entering a value.
+	 * @param {Object} customEvent
+	 */
+	function handleInput(customEvent) {
+		const input = customEvent.detail.target;
+		const nextElement = input.nextElementSibling;
+
+		if (input.value.length && nextElement.tagName.toLowerCase() === 'input') {
+			nextElement.focus();
+		}
+	}
+
+	/**
+	 * Delete the appropriate value and focus on the appropriate input.
+	 * @param {Object} customEvent
+	 */
+	function handleBackspace(customEvent) {
+		const input = customEvent.detail.target;
+		const previousElement = input.previousElementSibling;
+		const previousElementIsInput = previousElement?.tagName.toLowerCase() === 'input';
+
+		if (input.value.length) {
+			input.value = '';
+			if (previousElementIsInput) {
+				previousElement.focus();
+			}
+		} else if (previousElementIsInput) {
+			previousElement.value = '';
+			previousElement.focus();
+		}
+	}
 </script>
 
 <form class="flex space-x-3" on:submit|preventDefault={submitGuess}>
 	{#each values as value, i (i)}
-		<GuessLetter name={i} {value} {disabled} autofocus={!disabled && i === 0} />
+		<GuessLetter
+			name={i}
+			{value}
+			{disabled}
+			autofocus={!disabled && i === 0}
+			on:input={handleInput}
+			on:backspace={handleBackspace}
+		/>
 	{/each}
 
 	<button class="bg-indigo-700 rounded">Submit guess</button>
