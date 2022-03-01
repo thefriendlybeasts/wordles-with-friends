@@ -17,7 +17,8 @@
 				guess.map((letter, index) => ({
 					letter,
 					positionIsCorrect: $solution[index] === letter,
-					presence: $solution.includes(letter)
+					presence: $solution.includes(letter),
+					count: [...$solution].filter((l) => l === letter).length
 				})),
 				...$guesses.slice(1)
 			];
@@ -27,7 +28,8 @@
 				guess.map((letter, index) => ({
 					letter,
 					positionIsCorrect: $solution[index] === letter,
-					presence: $solution.includes(letter)
+					presence: $solution.includes(letter),
+					count: [...$solution].filter((l) => l === letter).length
 				})),
 				...$guesses.slice(activeGuess + 1)
 			];
@@ -55,3 +57,5 @@
 		<Guess on:guess.submitted={checkGuess} disabled={i !== activeGuess} />
 	{/each}
 </div>
+
+<code>{JSON.stringify($guesses)}</code>
