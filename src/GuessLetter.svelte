@@ -36,7 +36,7 @@
 </script>
 
 <input
-	class="border border-zinc-50 bg-transparent w-1/5 p-1 text-center"
+	class="border border-zinc-50 bg-transparent w-1/5 p-1 text-center disabled:opacity-50"
 	maxlength="1"
 	bind:value
 	{disabled}

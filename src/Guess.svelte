@@ -66,5 +66,7 @@
 		/>
 	{/each}
 
-	<button class="bg-indigo-700 rounded">Submit guess</button>
+	<button class="bg-indigo-700 rounded disabled:bg-indigo-800 disabled:opacity-50" {disabled}>
+		Submit guess
+	</button>
 </form>
