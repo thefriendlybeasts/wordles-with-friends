@@ -3,6 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let disabled = true;
+	export let guess;
 
 	const dispatch = createEventDispatcher();
 	let values = ['', '', '', '', ''];
@@ -58,6 +59,7 @@
 	{#each values as value, i (i)}
 		<GuessLetter
 			name={i}
+			letterGuess={guess[i]}
 			{value}
 			{disabled}
 			autofocus={!disabled && i === 0}
