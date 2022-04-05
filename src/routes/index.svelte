@@ -59,6 +59,11 @@
 
 	onMount(async () => {
 		$solution = document.location.search.substring(6);
+		if ($solution.length !== 5) {
+			alertInvalidWordError();
+			return;
+		}
+
 		const response = await wordService.lookUpWord($solution);
 
 		switch (response.status) {
