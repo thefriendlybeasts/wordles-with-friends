@@ -48,6 +48,15 @@
 		}
 	}
 
+	function alertInvalidWordError() {
+		alert(`There's a problem with your word. Ensure it's 5 letters long and is a word.`);
+	}
+
+	function alertUnknownError(response) {
+		alert('There was an unknown error. If you know what it means, check the console.');
+		console.dir(response);
+	}
+
 	onMount(async () => {
 		$solution = document.location.search.substring(6);
 		const response = await wordService.lookUpWord($solution);
@@ -57,11 +66,10 @@
 				// Do nothing?
 				break;
 			case 404:
-				alert(`There's a problem with your word. Ensure it's 5 letters long and is a word.`);
+				alertInvalidWordError();
 				break;
 			default:
-				alert('There was an unknown error. If you know what it means, check the console.');
-				console.dir(response);
+				alertUnknownError(response);
 		}
 	});
 </script>
