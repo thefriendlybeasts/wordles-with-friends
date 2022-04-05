@@ -61,4 +61,5 @@
 	on:input={handleInput}
 	on:keydown={handleKeyDown}
 	pattern="[a-zA-Z]"
+	required
 />
