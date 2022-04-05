@@ -2,8 +2,10 @@
 	import Guess from '../Guess.svelte';
 	import { solution, guesses } from '../stores';
 	import { onMount } from 'svelte';
+	import WordService from '$lib/word-service';
 
 	let activeGuess = 0;
+	const wordService = new WordService();
 
 	/**
 	 * Check if the guess is correct and respond accordingly.
@@ -46,8 +48,21 @@
 		}
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		$solution = document.location.search.substring(6);
+		const response = await wordService.lookUpWord($solution);
+
+		switch (response.status) {
+			case 200:
+				// Do nothing?
+				break;
+			case 404:
+				alert(`There's a problem with your word. Ensure it's 5 letters long and is a word.`);
+				break;
+			default:
+				alert('There was an unknown error. If you know what it means, check the console.');
+				console.dir(response);
+		}
 	});
 </script>
 
