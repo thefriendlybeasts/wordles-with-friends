@@ -52,7 +52,7 @@
 	});
 </script>
 
-<div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-3 p-5">
+<div class="max-w-lg mx-auto sm:px-6 lg:px-8 space-y-3 p-5">
 	{#each $guesses as guess, i (i)}
 		<Guess on:guess.submitted={checkGuess} disabled={i !== activeGuess} {guess} />
 	{/each}
