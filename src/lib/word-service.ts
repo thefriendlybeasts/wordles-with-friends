@@ -29,33 +29,17 @@ export default class WordService {
     return `${env.services.wordnik.baseUrl}${compiledEndpoint}`;
   }
 
-  async validateWord(
-    word,
-    onInvalidWordError = () => undefined,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onUnknownError = (response) => undefined
-  ) {
+  async validateWord(word) {
 		if (word.length !== 5) {
-			onInvalidWordError();
-			return;
+			return false;
 		}
 
 		const response = await this.lookUpWord(word);
 
-		let wordIsValid;
-		switch (response.status) {
-			case 200:
-				wordIsValid = true;
-				break;
-			case 404:
-				onInvalidWordError();
-				wordIsValid = false;
-				break;
-			default:
-				onUnknownError(response);
-				wordIsValid = false;
-		}
+    if (![200, 404].includes(response.status)) {
+      throw new Error(`HTTP Status: ${response.status}`);
+    }
 
-		return wordIsValid;
+    return response.status === 200;
 	}
 }

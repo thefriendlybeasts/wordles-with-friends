@@ -17,11 +17,14 @@
 	onMount(async () => {
 		const solution = $page.params.puzzle;
 		await wordService
-			.validateWord(solution, alertInvalidWordError, alertUnknownError)
+			.validateWord(solution)
 			.then((wordIsValid) => {
 				if (wordIsValid) {
 					window.location.href = '/puzzle/' + window.btoa(solution);
+				} else {
+					alertInvalidWordError();
 				}
-			});
+			})
+			.catch(alertUnknownError);
 	});
 </script>
