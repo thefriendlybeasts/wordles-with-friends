@@ -5,31 +5,6 @@
 
 	const wordService = new WordService();
 
-	async function validateWord(solution) {
-		if (solution.length !== 5) {
-			alertInvalidWordError();
-			return;
-		}
-
-		const response = await wordService.lookUpWord(solution);
-
-		let wordIsValid;
-		switch (response.status) {
-			case 200:
-				wordIsValid = true;
-				break;
-			case 404:
-				alertInvalidWordError();
-				wordIsValid = false;
-				break;
-			default:
-				alertUnknownError(response);
-				wordIsValid = false;
-		}
-
-		return wordIsValid;
-	}
-
 	function alertInvalidWordError() {
 		alert(`There's a problem with your word. Ensure it's 5 letters long and is a word.`);
 	}
@@ -41,10 +16,12 @@
 
 	onMount(async () => {
 		const solution = $page.params.puzzle;
-		await validateWord(solution).then((wordIsValid) => {
-			if (wordIsValid) {
-				window.location.href = '/puzzle/' + window.btoa(solution);
-			}
-		});
+		await wordService
+			.validateWord(solution, alertInvalidWordError, alertUnknownError)
+			.then((wordIsValid) => {
+				if (wordIsValid) {
+					window.location.href = '/puzzle/' + window.btoa(solution);
+				}
+			});
 	});
 </script>
