@@ -1,8 +1,13 @@
 <script>
 	import { page } from '$app/stores';
 	import Guess from '../../Guess.svelte';
+	import NotificationService from '$lib/notification-service';
+	import WordService from '$lib/word-service';
 	import { solution, guesses } from '../../stores';
 	import { onMount } from 'svelte';
+
+	const notificationService = new NotificationService();
+	const wordService = new WordService();
 
 	let activeGuess = 0;
 
@@ -10,19 +15,27 @@
 	 * Check if the guess is correct and respond accordingly.
 	 * @param guessSubmittedEvent
 	 */
-	function processGuess(guessSubmittedEvent) {
+	async function processGuess(guessSubmittedEvent) {
 		const guess = guessSubmittedEvent.detail;
 
-		const guessMetadata = getGuessMetadata(guess);
-		updateGuesses(guessMetadata);
-
 		if (guessIsCorrect(guess)) {
+			updateGuesses(guess);
 			alert('You win!');
 		} else {
-			activeGuess++;
-			if (activeGuess === $guesses.length) {
-				alert('you lose');
-			}
+			await wordService
+				.validateWord(guess.join(''))
+				.then((wordIsValid) => {
+					if (wordIsValid) {
+						updateGuesses(guess);
+						activeGuess++;
+						if (activeGuess === $guesses.length) {
+							alert('you lose');
+						}
+					} else {
+						notificationService.alertInvalidWordError();
+					}
+				})
+				.catch(notificationService.alertUnknownError);
 		}
 	}
 
@@ -45,7 +58,8 @@
 		});
 	}
 
-	function updateGuesses(guessMetadata) {
+	function updateGuesses(guess) {
+		const guessMetadata = getGuessMetadata(guess);
 		if (activeGuess === 0) {
 			$guesses = [guessMetadata, ...$guesses.slice(1)];
 		} else {
