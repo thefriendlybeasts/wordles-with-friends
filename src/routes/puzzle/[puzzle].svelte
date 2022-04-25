@@ -10,45 +10,55 @@
 	 * Check if the guess is correct and respond accordingly.
 	 * @param guessSubmittedEvent
 	 */
-	function checkGuess(guessSubmittedEvent) {
+	function processGuess(guessSubmittedEvent) {
 		const guess = guessSubmittedEvent.detail;
 
-		compareGuessToSolution(guess);
+		const guessMetadata = getGuessMetadata(guess);
+		updateGuesses(guessMetadata);
+
+		if (guessIsCorrect(guess)) {
+			alert('You win!');
+		} else {
+			activeGuess++;
+			if (activeGuess === $guesses.length) {
+				alert('you lose');
+			}
+		}
 	}
 
-	function compareGuessToSolution(guess) {
+	function getGuessMetadata(guess) {
 		let solutionLetterPool = $solution;
-		const guessMap = guess.map((letter, index) => {
-			const letterMetaData = {
+
+		return guess.map((letter, index) => {
+			const letterMetadata = {
 				letter,
 				positionIsCorrect: $solution[index] === letter,
 				presenceInSolution: $solution.includes(letter),
 				presenceInPool: solutionLetterPool.includes(letter)
 			};
 
-			if (letterMetaData.presenceInPool) {
+			if (letterMetadata.presenceInPool) {
 				solutionLetterPool = solutionLetterPool.replace(letter, '');
 			}
 
-			return letterMetaData;
+			return letterMetadata;
 		});
+	}
 
+	function updateGuesses(guessMetadata) {
 		if (activeGuess === 0) {
-			$guesses = [guessMap, ...$guesses.slice(1)];
+			$guesses = [guessMetadata, ...$guesses.slice(1)];
 		} else {
-			$guesses = [...$guesses.slice(0, activeGuess), guessMap, ...$guesses.slice(activeGuess + 1)];
+			$guesses = [
+				...$guesses.slice(0, activeGuess),
+				guessMetadata,
+				...$guesses.slice(activeGuess + 1)
+			];
 		}
+	}
 
-		const guessAsString = guess.join('');
-		if (guessAsString === $solution) {
-			alert('You win!');
-			return;
-		}
-
-		activeGuess++;
-		if (activeGuess === $guesses.length) {
-			alert('you lose');
-		}
+	function guessIsCorrect(guess) {
+		return guess.join('') === $solution;
 	}
 
 	onMount(async () => {
@@ -58,6 +68,6 @@
 
 <div class="max-w-lg mx-auto sm:px-6 lg:px-8 space-y-3 p-5">
 	{#each $guesses as guess, i (i)}
-		<Guess on:guess.submitted={checkGuess} disabled={i !== activeGuess} {guess} />
+		<Guess on:guess.submitted={processGuess} disabled={i !== activeGuess} {guess} />
 	{/each}
 </div>
