@@ -16,6 +16,7 @@
 					window.location.href = '/puzzle/' + window.btoa(solution);
 				} else {
 					notificationService.alertInvalidWordError();
+					window.location.href = '/';
 				}
 			})
 			.catch(notificationService.alertUnknownError);
