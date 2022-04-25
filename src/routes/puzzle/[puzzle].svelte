@@ -11,9 +11,13 @@
 	 * @param guessSubmittedEvent
 	 */
 	function checkGuess(guessSubmittedEvent) {
-		let solutionLetterPool = $solution;
-
 		const guess = guessSubmittedEvent.detail;
+
+		compareGuessToSolution(guess);
+	}
+
+	function compareGuessToSolution(guess) {
+		let solutionLetterPool = $solution;
 		const guessMap = guess.map((letter, index) => {
 			const letterMetaData = {
 				letter,
