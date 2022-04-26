@@ -15,10 +15,6 @@
 		class="mx-auto block"
 	/>
 
-	<p class="bg-red-300 text-red-800 p-2 rounded-sm">
-		This doesn't work on mobile because of a bug with a dependency.
-	</p>
-
 	<form on:submit|preventDefault={redirectToNewPuzzlePage}>
 		<input type="text" bind:value={puzzle} class="p-2" />
 		<button type="submit" class="bg-indigo-700 rounded p-2">Create puzzle</button>
